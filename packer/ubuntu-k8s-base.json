@@ -78,6 +78,7 @@
             "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'",
             "expect_disconnect": true,
             "scripts": [
+                "scripts/common-tools.sh",
                 "scripts/common-sshd.sh",
                 "scripts/common-sudoers.sh",
                 "scripts/common-vagrant.sh",
