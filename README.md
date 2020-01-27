@@ -26,11 +26,14 @@ vagrant up
 
 ## Step 3: Get admin user config file from master node
 
-After cluster is up:
+After cluster is up, execute:
 
 ```
-scp -P $(vagrant port master --guest 22) vagrant@127.0.0.1:/home/vagrant/.kube/config .
+./merge-kube-config.sh
 ```
 
 Enter vagrant password if asked (default is `vagrant`)
-This command copies admin user config file to current directory. Move this file to `~/.kube` to start interacting with the cluster
+
+This script copies kubernetes cluster admin config from vagrant to `tmp` folder, merge this config file with your existing config file at `~/.kube/config` and output to `tmp/config.merged` file
+
+Move `tmp/config.merged` to `~/.kube/config` to start interacting with the cluster
