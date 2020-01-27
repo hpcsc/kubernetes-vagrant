@@ -79,13 +79,13 @@
             "expect_disconnect": true,
             "scripts": [
                 "scripts/common-tools.sh",
-                "scripts/common-sshd.sh",
-                "scripts/common-sudoers.sh",
-                "scripts/common-vagrant.sh",
-                "scripts/common-virtualbox.sh",
-                "scripts/common-docker.sh",
-                "scripts/common-kubeadm.sh",
-                "scripts/common-swap-off.sh"
+                "scripts/sshd.sh",
+                "scripts/sudoers.sh",
+                "scripts/vagrant.sh",
+                "scripts/virtualbox.sh",
+                "scripts/docker.sh",
+                "scripts/kubeadm.sh",
+                "scripts/swap-off.sh"
             ],
             "type": "shell"
         }
