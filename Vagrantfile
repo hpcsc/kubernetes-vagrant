@@ -1,16 +1,7 @@
-servers = [
-    { :name => "master", :type => "master" },
-    { :name => "node-1", :type => "node" },
-    { :name => "node-2", :type => "node" }
-]
-
-Vagrant.configure("2") do |config|
+def define_kubernetes_cluster(cluster_name, servers, config)
     ip_suffix = 10
     ip_prefix = "192.168.205"
 
-    config.vm.box_version = 0
-
-    cluster_name = "kubernetes"
     servers.each do |server|
         server_full_name = "#{server[:name]}"
         config.vm.define server_full_name do |server_config|
@@ -41,4 +32,17 @@ Vagrant.configure("2") do |config|
             end
         end
     end
+end
+
+Vagrant.configure("2") do |config|
+    config.vm.box_version = 0
+
+    cluster_name = "kubernetes"
+    servers = [
+        { :name => "master", :type => "master" },
+        { :name => "node-1", :type => "node" },
+        { :name => "node-2", :type => "node" }
+    ]
+
+    define_kubernetes_cluster(cluster_name, servers, config)
 end
