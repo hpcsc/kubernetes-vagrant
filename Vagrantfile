@@ -6,6 +6,7 @@ def define_kubernetes_cluster(cluster_name, servers, config)
         server_full_name = "#{server[:name]}"
         config.vm.define server_full_name do |server_config|
             server_config.vm.box = "ubuntu-k8s-base"
+            server_config.vm.box_version = 0
             server_config.vm.hostname = server_full_name
 
             ip = "#{ip_prefix}.#{ip_suffix}"
@@ -34,15 +35,38 @@ def define_kubernetes_cluster(cluster_name, servers, config)
     end
 end
 
-Vagrant.configure("2") do |config|
-    config.vm.box_version = 0
+def define_keycloak(cluster_name, config)
+    name = "keycloak"
 
+    config.vm.define name do |keycloak|
+        keycloak.vm.box = "ubuntu/bionic64"
+        keycloak.vm.hostname = name
+
+        ip = "192.168.205.9"
+        keycloak.vm.network :private_network, ip: ip
+
+        keycloak.vm.provider "virtualbox" do |v|
+            v.name = name
+            v.customize ["modifyvm", :id, "--groups", "/#{cluster_name}"]
+            v.customize ["modifyvm", :id, "--memory", 2048]
+            v.customize ["modifyvm", :id, "--cpus", 2]
+        end
+
+        keycloak.vm.provision "shell", path: "scripts/keycloak-java.sh"
+        keycloak.vm.provision "shell", path: "scripts/keycloak-install.sh", args: ip
+        keycloak.vm.provision "shell", path: "scripts/keycloak-config.sh", args: ip
+    end
+end
+
+Vagrant.configure("2") do |config|
     cluster_name = "kubernetes"
+
+    define_keycloak(cluster_name, config)
+
     servers = [
         { :name => "master", :type => "master" },
         { :name => "node-1", :type => "node" },
         { :name => "node-2", :type => "node" }
     ]
-
     define_kubernetes_cluster(cluster_name, servers, config)
 end
