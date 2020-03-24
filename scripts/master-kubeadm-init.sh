@@ -1,10 +1,19 @@
 #!/bin/bash
 
-echo "=== kubeadm init"
 IP_ADDR=`ifconfig enp0s8 | grep inet  | awk '{print $2}'| cut -f2 -d:`
+cp -vf /vagrant/kubeadm-config.yml /tmp
+echo "=== replace master IP address in /tmp/kubeadm-config.yml with ${IP_ADDR}"
+sed -i 's/${MASTER_IP_ADDRESS}/'${IP_ADDR}'/g' /tmp/kubeadm-config.yml
+
+echo "=== use custom ca key and cert (from keycloak) as kubernetes ca"
+mkdir -p /etc/kubernetes/pki
+cp -vf /vagrant/tmp/ca.{key,crt} /etc/kubernetes/pki/
+
+echo "=== update server CA certificates"
+cp -v /etc/kubernetes/pki/ca.crt /usr/local/share/ca-certificates/
+update-ca-certificates
 
 HOST_NAME=$(hostname -s)
-kubeadm init --apiserver-advertise-address=$IP_ADDR \
-             --apiserver-cert-extra-sans=$IP_ADDR  \
-             --node-name $HOST_NAME \
-             --pod-network-cidr=172.16.0.0/16
+echo "=== kubeadm init for ${HOST_NAME}"
+kubeadm init --node-name $HOST_NAME \
+             --config /tmp/kubeadm-config.yml
