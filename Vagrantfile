@@ -54,6 +54,7 @@ def define_keycloak(cluster_name, config)
 
         keycloak.vm.provision "shell", path: "scripts/keycloak-java.sh"
         keycloak.vm.provision "shell", path: "scripts/keycloak-install.sh", args: ip
+        keycloak.vm.provision "shell", path: "scripts/keycloak-generate-cert.sh"
         keycloak.vm.provision "shell", path: "scripts/keycloak-config.sh", args: ip
     end
 end

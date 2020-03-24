@@ -24,6 +24,8 @@ if [ -z "$(systemctl list-unit-files | grep keycloak)" ]; then
     cp -v /vagrant/keycloak.service /etc/systemd/system/keycloak.service
     /opt/keycloak/bin/add-user-keycloak.sh -u admin -p 'admin'
 
+    cp -vf /vagrant/keycloak.standalone.xml /opt/keycloak/standalone/configuration/standalone.xml
+
     systemctl daemon-reload && \
         systemctl enable keycloak && \
         systemctl start keycloak && \

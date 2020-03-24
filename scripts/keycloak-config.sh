@@ -36,7 +36,9 @@ if [ -z "${EXISTING_CLIENT}" ]; then
     "baseUrl": "${HOST_URL}/realms/master/${CLIENT_NAME}/",
     "redirectUris": [
         "${HOST_URL}/realms/master/${CLIENT_NAME}/*"
-    ]
+    ],
+    "directAccessGrantsEnabled": true,
+    "publicClient": true
 }
 EOF
 else
