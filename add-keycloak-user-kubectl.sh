@@ -1,14 +1,14 @@
 #!/bin/bash
 
-NAME_IN_CONFIG=kubernetes-vagrant-admin
+NAME_IN_CONFIG=kubernetes-vagrant-dev-1
 EXISTING_USER_IN_CONFIG=$(kubectl config view -o json --raw=true | jq '.users[] | select(.name == "'${NAME_IN_CONFIG}'") | .name')
 
 if [ -z "${EXISTING_USER_IN_CONFIG}" ]; then
      TOKEN_RESPONSE=$(curl -X POST \
                     https://192.168.205.9:8443/auth/realms/master/protocol/openid-connect/token \
                     -d grant_type=password \
-                    -d username=admin \
-                    -d password=admin \
+                    -d username=dev-1 \
+                    -d password=password.123 \
                     -d client_id=local-kubernetes \
                     -d scope=openid)
 

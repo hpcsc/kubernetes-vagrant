@@ -55,7 +55,10 @@ def define_keycloak(cluster_name, config)
         keycloak.vm.provision "shell", path: "scripts/keycloak-java.sh"
         keycloak.vm.provision "shell", path: "scripts/keycloak-install.sh", args: ip
         keycloak.vm.provision "shell", path: "scripts/keycloak-generate-cert.sh"
-        keycloak.vm.provision "shell", path: "scripts/keycloak-config.sh", args: ip
+        keycloak.vm.provision "shell", path: "scripts/keycloak-wait-server-up.sh", args: ip
+        keycloak.vm.provision "shell", path: "scripts/keycloak-create-client.sh", args: "local-kubernetes"
+        keycloak.vm.provision "shell", path: "scripts/keycloak-create-group.sh", args: "Developers"
+        keycloak.vm.provision "shell", path: "scripts/keycloak-create-user.sh", args: ["dev-1", "Developers"]
     end
 end
 
