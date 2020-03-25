@@ -62,6 +62,8 @@ end
 Vagrant.configure("2") do |config|
     cluster_name = "kubernetes"
 
+    system("./generate-ca-certs.sh")
+
     define_keycloak(cluster_name, config)
 
     servers = [

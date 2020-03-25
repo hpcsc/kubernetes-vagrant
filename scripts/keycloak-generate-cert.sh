@@ -5,16 +5,25 @@ mkdir -p /etc/keycloak/certs
 pushd /etc/keycloak/certs
 
 if [ ! -f ./keycloak.key ]; then
-    echo "=== Generating x.509 key pair"
+    echo "=== Generating CSR"
     openssl req -new \
         -newkey rsa:4096 \
-        -days 365 \
         -nodes \
-        -x509 \
         -subj "/CN=192.168.205.9" \
         -addext "subjectAltName=IP:192.168.205.9" \
         -keyout keycloak.key \
-        -out keycloak.crt
+        -out keycloak.csr
+
+    echo "=== Generating x.509 key pair"
+    openssl x509 -req \
+        -in keycloak.csr \
+        -CA /vagrant/tmp/ca.crt \
+        -CAkey /vagrant/tmp/ca.key \
+        -CAcreateserial \
+        -extfile /vagrant/certs/keycloak.v3.ext \
+        -out keycloak.crt \
+        -days 365 \
+        -sha256
 fi;
 
 if [ ! -f ./keycloak.p12 ]; then
@@ -40,9 +49,6 @@ if [ ! -f ./keycloak.jks ]; then
             -srcstorepass password \
             -alias keycloak
 fi;
-
-cp -vf ./keycloak.key /vagrant/tmp/ca.key
-cp -vf ./keycloak.crt /vagrant/tmp/ca.crt
 
 echo "=== Change ownership of certs to keycloak"
 sudo chown -R keycloak:keycloak /etc/keycloak/certs/*
