@@ -6,7 +6,9 @@ This setup is based on [https://github.com/ecomm-integration-ballerina/kubernete
 
 It uses [MetalLB](https://metallb.universe.tf/configuration/#layer-2-configuration) (Layer 2 Configuration) to provides network load-balancer
 
-## Step 1: Build base Vagrant box using Packer
+## Step 1 (optional): Build base Vagrant box using Packer
+
+`Vagrantfile` already uses pre-built Vagrant box hosted in vagrant cloud. If you want to build the box yourself, follow instruction below.
 
 This creates a Vagrant box based on Ubuntu 18.04 with common tools used by both Kubernetes master and worker nodes like docker, kubectl etc
 
