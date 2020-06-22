@@ -5,8 +5,8 @@ def define_kubernetes_cluster(cluster_name, servers, config)
     servers.each do |server|
         server_full_name = "#{server[:name]}"
         config.vm.define server_full_name do |server_config|
-            server_config.vm.box = "ubuntu-k8s-base"
-            server_config.vm.box_version = 0
+            server_config.vm.box = "hpcsc/ubuntu-k8s-base"
+            server_config.vm.box_version = "0.1.0"
             server_config.vm.hostname = server_full_name
 
             ip = "#{ip_prefix}.#{ip_suffix}"
@@ -20,7 +20,7 @@ def define_kubernetes_cluster(cluster_name, servers, config)
                 v.customize ["modifyvm", :id, "--cpus", 2]
             end
 
-            config.vm.provision "shell", path: "scripts/common-kubelet-node-ip.sh"
+            server_config.vm.provision "shell", path: "scripts/common-kubelet-node-ip.sh"
 
             if server[:type] == "master"
                 server_config.vm.provision "shell", path: "scripts/master-kubeadm-init.sh"
@@ -65,7 +65,7 @@ end
 Vagrant.configure("2") do |config|
     cluster_name = "kubernetes"
 
-    system("./generate-ca-certs.sh")
+    system("./certs/generate-ca-certs.sh")
 
     define_keycloak(cluster_name, config)
 
