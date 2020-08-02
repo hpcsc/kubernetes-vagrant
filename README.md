@@ -37,3 +37,39 @@ Execute following script to merge this `admin.conf` file with your existing conf
 ```
 
 Move `tmp/config.merged` to `~/.kube/config` to start interacting with the cluster
+
+## Step 4: Setup keycloak
+
+- As kubernetes admin, execute: `kubectl apply -f ./sample-role-bindings/group-role-binding.yml` to create role binding for `Developer` group.
+
+### Get refresh token manually from keycloak
+
+- Execute `./set-keycloak-user-kubectl.sh` to add another user (`dev-1`, who belongs to `Developer` group) to your kubectl config. This will setup kubectl to get identity token from keycloak sending any command to kubernetes cluster.
+- Use this new user in your current context
+- You will need to refresh the refresh token periodically (by executing `./set-keycloak-user-kubectl.sh` again) when the refresh token expires.
+
+### Use kubelogin
+
+This [kubectl plugin](https://github.com/int128/kubelogin) can simplify the process of getting identity token from keycloak (and refresh it automatically)
+
+To use it:
+
+- Install the plugin
+- Go to [https://192.168.205.9:8443/auth/](https://192.168.205.9:8443/auth/), login using username/password `admin/admin`, open `Clients` -> `local-kubernetes` -> `Credentials` -> Note down client secret
+- Add the following user config to your kubectl config:
+
+```
+- name: kubernetes-vagrant-dev-1
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1beta1
+      command: kubectl
+      args:
+      - oidc-login
+      - get-token
+      - --oidc-issuer-url=https://192.168.205.9:8443/auth/realms/master/
+      - --oidc-client-id=local-kubernetes
+      - --oidc-client-secret=CLIENT_SECRET_NOTED_ABOVE
+```
+
+- Use this new user in your current context
