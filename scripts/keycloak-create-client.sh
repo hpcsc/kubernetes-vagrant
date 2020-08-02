@@ -1,6 +1,9 @@
 #!/bin/bash -e
 
 CLIENT_NAME=$1
+HOST_IP=$2
+PORT=8080
+HOST_URL="http://${HOST_IP}:${PORT}"
 
 if [ -z "${CLIENT_NAME}" ]; then
     echo "=== client name is required"
@@ -20,23 +23,30 @@ if [ -z "${EXISTING_CLIENT}" ]; then
     "redirectUris": [
         "${HOST_URL}/realms/master/${CLIENT_NAME}/*"
     ],
+    "clientAuthenticatorType": "client-secret",
+    "enabled": true,
+    "bearerOnly": false,
+    "consentRequired": false,
+    "standardFlowEnabled": true,
+    "implicitFlowEnabled": false,
     "directAccessGrantsEnabled": true,
+    "serviceAccountsEnabled": false,
     "publicClient": true,
-        "protocolMappers": [
-        {
-            "name": "group-mapper",
-            "protocol": "openid-connect",
-            "protocolMapper": "oidc-group-membership-mapper",
-            "consentRequired": false,
-            "config": {
-                "full.path": "true",
-                "id.token.claim": "true",
-                "access.token.claim": "true",
-                "claim.name": "groups",
-                "userinfo.token.claim": "true"
-            }
+    "frontchannelLogout": false,
+    "protocol": "openid-connect",
+    "protocolMappers": [{
+        "name": "group-mapper",
+        "protocol": "openid-connect",
+        "protocolMapper": "oidc-group-membership-mapper",
+        "consentRequired": false,
+        "config": {
+            "full.path": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "groups",
+            "userinfo.token.claim": "true"
         }
-    ]
+    }]
 }
 EOF
 else

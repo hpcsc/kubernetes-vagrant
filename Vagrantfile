@@ -48,15 +48,15 @@ def define_keycloak(cluster_name, config)
         keycloak.vm.provider "virtualbox" do |v|
             v.name = name
             v.customize ["modifyvm", :id, "--groups", "/#{cluster_name}"]
-            v.customize ["modifyvm", :id, "--memory", 2048]
-            v.customize ["modifyvm", :id, "--cpus", 2]
+            v.customize ["modifyvm", :id, "--memory", 1024]
+            v.customize ["modifyvm", :id, "--cpus", 1]
         end
 
         keycloak.vm.provision "shell", path: "scripts/keycloak-java.sh"
         keycloak.vm.provision "shell", path: "scripts/keycloak-install.sh", args: ip
         keycloak.vm.provision "shell", path: "scripts/keycloak-generate-cert.sh"
         keycloak.vm.provision "shell", path: "scripts/keycloak-wait-server-up.sh", args: ip
-        keycloak.vm.provision "shell", path: "scripts/keycloak-create-client.sh", args: "local-kubernetes"
+        keycloak.vm.provision "shell", path: "scripts/keycloak-create-client.sh", args: ["local-kubernetes", ip]
         keycloak.vm.provision "shell", path: "scripts/keycloak-create-group.sh", args: "Developers"
         keycloak.vm.provision "shell", path: "scripts/keycloak-create-user.sh", args: ["dev-1", "Developers"]
     end
