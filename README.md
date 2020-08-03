@@ -55,7 +55,7 @@ This [kubectl plugin](https://github.com/int128/kubelogin) can simplify the proc
 To use it:
 
 - Install the plugin
-- Go to [https://192.168.205.9:8443/auth/](https://192.168.205.9:8443/auth/), login using username/password `admin/admin`, open `Clients` -> `local-kubernetes` -> `Credentials` -> Note down client secret
+- Note down client secret value from `keycloak-local-kubernetes.secret`
 - Add the following user config to your kubectl config:
 
 ```
@@ -67,9 +67,9 @@ To use it:
       args:
       - oidc-login
       - get-token
-      - --oidc-issuer-url=https://192.168.205.9:8443/auth/realms/master/
+      - --oidc-issuer-url=https://192.168.205.9:8443/auth/realms/master
       - --oidc-client-id=local-kubernetes
       - --oidc-client-secret=CLIENT_SECRET_NOTED_ABOVE
 ```
 
-- Use this new user in your current context
+- Use this new user in your current context. When executing any kubectl command for the first time, kubelogin will open browser with keycloak login UI. Log in using username/password: `dev-1`/`password.123`

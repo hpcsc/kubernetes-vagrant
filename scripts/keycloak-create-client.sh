@@ -31,7 +31,7 @@ if [ -z "${EXISTING_CLIENT}" ]; then
     "implicitFlowEnabled": false,
     "directAccessGrantsEnabled": true,
     "serviceAccountsEnabled": false,
-    "publicClient": true,
+    "publicClient": false,
     "frontchannelLogout": false,
     "protocol": "openid-connect",
     "protocolMappers": [{
@@ -52,3 +52,8 @@ EOF
 else
     echo "=== Client ${CLIENT_NAME} exists"
 fi
+
+rm -f /vagrant/tmp/keycloak-local-kubernetes.secret
+
+ID=$(kcadm.sh get clients | jq -r '.[] | select(.clientId == "'${CLIENT_NAME}'") | .id')
+kcadm.sh get clients/${ID}/client-secret > /vagrant/tmp/keycloak-local-kubernetes.secret

@@ -14,6 +14,7 @@ TOKEN_RESPONSE=$(curl -s -X POST \
             -d username=${USERNAME} \
             -d password=${PASSWORD} \
             -d client_id=local-kubernetes \
+            -d client_secret=$(cat ./tmp/keycloak-local-kubernetes.secret | jq -r '.value') \
             -d scope=openid)
 
 echo $TOKEN_RESPONSE | jq -r '.refresh_token'
